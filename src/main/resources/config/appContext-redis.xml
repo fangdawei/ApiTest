@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!-- 配置jedis连接池配置 -->
+  <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+    <property name="maxIdle" value="${redis.maxIdle}"/> <!--最大能够保持idel状态的对象数-->
+    <property name="maxTotal" value="${redis.maxActive}"/><!--最大分配的对象数-->
+    <property name="maxWaitMillis" value="${redis.maxWait}"/><!--大建立连接等待时间-->
+    <property name="testOnBorrow" value="true"/><!--当调用borrow Oject方法时，是否进行有效性检查-->
+  </bean>
+
+  <!-- Redis 连接工厂配置 -->
+  <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+    <!--设置连接池配置，不设置的话会使用默认的连接池配置，若想禁用连接池可设置 usePool = false -->
+    <property name="poolConfig" ref="jedisPoolConfig"/>
+    <property name="hostName" value="${redis.host}"/>
+    <property name="port" value="${redis.port}"/>
+    <!-- 连超时设置. -->
+    <property name="timeout" value="${redis.timeout}"/>
+    <!-- 是否使用连接池. -->
+    <property name="usePool" value="true"/>
+    <!-- 更多连接工厂配置...-->
+  </bean>
+
+  <!-- RedisTemplate 配置 -->
+  <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+    <!-- 设置 Redis 连接工厂-->
+    <property name="connectionFactory" ref="jedisConnectionFactory"/>
+    <!--设置默认 Serializer ，包含 keySerializer & valueSerializer -->
+    <property name="defaultSerializer">
+      <bean class="com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer"/>
+    </property>
+    <!-- 单独设置 keySerializer -->
+    <property name="keySerializer">
+      <bean class="com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer"/>
+    </property>
+    <!-- 单独设置 valueSerializer -->
+    <property name="valueSerializer">
+      <bean class="com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer"/>
+    </property>
+  </bean>
+</beans>
