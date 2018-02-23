@@ -14,13 +14,13 @@
 
   <description>spring profile配置</description>
 
-  <!-- 开发环境配置文件 -->
+  <!-- dev环境配置文件 -->
   <beans profile="dev">
     <context:property-placeholder
         location="classpath*:property/dev/*.properties" />
   </beans>
 
-  <!-- 测试环境配置文件 -->
+  <!-- release环境配置文件 -->
   <beans profile="release">
     <context:property-placeholder
         location="classpath*:property/release/*.properties" />
